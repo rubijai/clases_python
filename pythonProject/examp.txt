@@ -1,0 +1,4 @@
+This is a write example. Text will be sequentially written until a newline control character occurs. 
+Then a new line will begin with 
+and another new line, etc 
+Yo soy Jaime Ramírez Arbeláez
