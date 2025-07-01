@@ -1951,14 +1951,19 @@ for nombre, materias in estudiantes.items():
 
 #Crea un diccionario a partir de dos listas: una con claves y
 # otra con valores.
-claves = list(notas.keys())
-valores = list(notas.values())
+claves = [x for x in notas.keys()]
+valores =[y for y in notas.values()]
+print(claves)
+print(valores)
+#claves = list(notas.keys())
+#valores = list(notas.values())
 print(claves,valores)
 dic1 = {clave:valor for clave,valor  in zip(claves,valores)}
 print(dic1)
 
 #otra solucion:
-print(dict(zip(claves,valores)))
+#print(dict(zip(claves,valores)))
+print(zip(claves,valores))
 
 #Dado un diccionario con productos y precios, crea uno nuevo
 #solo con los productos que cuesten más de 100.

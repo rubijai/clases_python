@@ -177,7 +177,8 @@ else:
     print('Se espera num ent positivo')
     open(sum.txt)
 
-fx = open('JRAM.txt')
+#fx = open('JRAM.txt')
+fx = open('source2.txt')
 print(fx.readlines())
 fx.close
 
@@ -357,14 +358,14 @@ finalizar el bloque de código. Es una forma de gestión de
 contexto (context manager) que simplifica el manejo de 
 archivos y evita errores comunes como olvidar cerrar el archivo.
 '''
-with open('J.txt', 'r') as f2:
+with open('data.txt', 'r') as f2:
     n2 = f2.readlines()
     print(n2)
 n2_l = [int(n) for n in n2]
 print(n2_l)
 
 #with open('file2.txt', 'r') as f1:
-with open('J.txt', 'r') as f1:
+with open('data2.txt', 'r') as f1:
     n1 = f1.readlines()
     print(n1)
 n1_l = [int(n) for n in n1 if int(n) in n2_l]
