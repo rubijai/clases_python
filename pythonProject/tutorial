@@ -1,0 +1,705 @@
+# mi-proyecto
+________________________________________
+✅ CONTENIDO DEL TUTORIAL
+1.	Conceptos clave: Git vs GitHub
+2.	Configuración inicial de Git
+3.	Crear un repositorio local
+4.	Conectar con GitHub (repositorio remoto)
+5.	Ciclo de trabajo básico: add, commit, push
+6.	Clonar un repositorio
+7.	Trabajar con ramas
+8.	Colaborar (pull, merge, fork, pull request)
+9.	Ignorar archivos con .gitignore
+10.	Visualización del historial y estados
+11.	Resolución de conflictos
+________________________________________
+🧠 1. ¿Qué es Git y qué es GitHub?
+•	Git: Sistema de control de versiones local. Guarda versiones de tus archivos.
+•	GitHub: Plataforma en línea para alojar repositorios Git. Permite colaborar con otros.
+________________________________________
+🛠️ 2. Configuración inicial de Git
+Abre tu terminal o Git Bash y configura tu nombre y correo:
+git config --global user.name "Tu Nombre"
+git config --global user.email tuemail@example.com
+git config --global core.editor "vim"
+
+________________________________________
+¿Qué significa --global en Git?
+Cuando usas --global, estás diciendo que la configuración se
+aplique a todos los repositorios del usuario actual en tu computadora.
+
+
+
+Niveles de configuración en Git
+Ejemplo explicado
+git config --global user.name "Jaime Ramirez"
+git config --global user.email "jaime@email.com"
+git config --global core.editor "vim"
+Esto le dice a Git:
+•	Siempre que Jaime use Git en cualquier carpeta o proyecto,
+    usará ese nombre y correo.
+•	Y también usará Vim como editor para abrir mensajes de commit
+    o conflictos.
+________________________________________
+Si NO usas --global
+Entonces la configuración solo se aplicará al repositorio actual.
+Por ejemplo:
+git config user.name "Otro Nombre"
+Ese nombre solo se usará en el proyecto donde estés trabajando en ese momento.
+Cómo ver las configuraciones actuales
+git config --list --show-origin
+Esto te mostrará qué configuraciones están activas y desde qué archivo vienen.
+
+Git necesita un editor de texto para tareas como:
+•	Escribir mensajes de commit (cuando no los incluyes con -m).
+•	Resolver conflictos de fusión (merge conflicts).
+•	Editar rebase interactivos u otras operaciones avanzadas.
+Git usa Vim como su editor de texto. Esto puede ser confuso si no estás
+familiarizado con Vim, ya que no es un editor gráfico ni intuitivo para principiantes.
+Se recomienda configurar Vim (o cualquier otro editor)
+1.	Es necesario tener un editor funcional para que Git pueda abrirlo en
+    operaciones clave.
+2.	Vim está disponible en casi todos los sistemas operativos por defecto.
+3.	Para usuarios que ya lo dominan, Vim es muy eficiente.
+Para saber cuál editor está configurado:
+git config --global core.editor
+Para usar Visual Studio Code:
+git config --global core.editor "code --wait"
+El flag --wait es importante: hace que Git espere a que cierres el editor antes de continuar.
+¿Dónde lo notarás?
+Por ejemplo, si ejecutas:
+git commit
+Sin -m, se abrirá el editor que tengas configurado para que escribas el mensaje de commit.
+Verifica la configuración:
+git config --list
+3. Crear un repositorio local
+
+En mi caso voy usar la carpeta python en el desktop:
+Administrator@win7U MINGW64 ~ (main)
+Debo cambiar a:
+
+cd desktop/python
+
+Administrator@win7U MINGW64 ~ (main)
+cd mi-proyecto
+git init
+Esto crea una carpeta con seguimiento de versiones. Initialized empty
+Git repository in C:/Users/Administrator/Desktop/Python/mi-proyecto/.git/
+que permanence oculta y la puedo ver con :
+ls –a    así se obtiene en bash:     ./  ../  .git/
+
+El comando `git branch -M main` sirve para **renombrar la rama actual
+a "main" y forzar el cambio si ya existe una rama con ese nombre**.
+
+- El comando `git branch` se utiliza para gestionar ramas:
+  crearlas, listarlas, eliminarlas y también renombrarlas[1][4][6].
+- La opción `-M` es una forma abreviada de `--move --force`, lo que
+  significa que **renombra la rama actual a "main" y, si ya existe
+  una rama llamada "main", la sobrescribe**.
+- Es útil, por ejemplo, cuando quieres cambiar el nombre de la
+  rama principal de "master" a "main", siguiendo las nuevas
+  convenciones de muchos proyectos.
+
+**En resumen:**
+`git branch -M main` renombra la rama actual a "main", forzando
+ el cambio si es necesario, y es una práctica común para estandarizar
+ el nombre de la rama principal del repositorio[1][4][6].
+
+
+
+
+4. Conectar con un repositorio remoto (GitHub)
+   1.	Crea un repositorio en GitHub (sin README). ¡!!!ojo!!!!!!
+   2.	Copia la URL del repositorio (HTTPS o SSH).
+Ejemplo con HTTPS:
+git remote add origin https://github.com/rubijai/mi-proyecto.git
+
+La palabra origin es un alias o nombre corto que tú le estás dando a
+la URL del repositorio remoto (en este caso, en GitHub).
+¿Qué significa cada parte?
+Parte	Significado
+git	    Comando para usar Git
+remote	Sección de Git que maneja repositorios remotos
+add	    Indica que vas a agregar un nuevo repositorio remoto
+origin	Alias del repositorio remoto. Es el nombre que usarás para referirte a esa URL
+https://github.com/...	Dirección del repositorio en GitHub (el destino remoto)
+¿Por qué usar origin?
+•	origin es un nombre convencional (por defecto), pero puedes usar
+    cualquier otro nombre si quieres (por ejemplo github, servidor1, etc.).
+•	Se usa en otros comandos, como:
+git push origin main
+Esto significa: “envía mis cambios de la rama main al repositorio remoto llamado origin”.
+¿Puedo cambiar el nombre origin?
+Sí. Por ejemplo, si te conectas a otro servidor, podrías hacer:
+git remote add servidor_secundario https://mi-servidor/git/otro-proyecto.git
+Y luego hacer push así:
+git push servidor_secundario main
+________________________________________
+Ver los remotos que tienes:
+git remote -v
+Te muestra todos los remotos y sus URLs.
+
+5. Ciclo básico: add → commit → push
+   Paso 1: Crear archivo
+   echo "# Mi primer proyecto" > README.md
+
+Esta es una instrucción de terminal (o consola) que hace lo siguiente:
+Desglose del comando
+Parte	Qué hace
+echo	Muestra un texto (en este caso: # Mi primer proyecto) en pantalla
+"..."	El texto que quieres mostrar o escribir
+>	Redirige la salida del comando echo a un archivo
+README.md	Nombre del archivo al que se va a escribir ese texto
+Resultado
+•	Crea un archivo llamado README.md si no existe, o lo sobrescribe si ya existe.
+•	Escribe en ese archivo la línea:
+•	# Mi primer proyecto
+•	Ese # al inicio es sintaxis Markdown para un título de nivel 1, muy común en
+    los archivos README.md.
+________________________________________
+¿Qué es un README.md?
+•	Es un archivo de texto (con formato Markdown) que suele contener:
+o	Descripción del proyecto
+o	Cómo instalarlo o usarlo
+o	Créditos o licencias
+•	Es muy común en repositorios Git, especialmente en GitHub, donde se muestra
+    automáticamente en la página principal del proyecto.
+________________________________________
+🛠 Ejemplo ampliado
+Si luego agregas más contenido, puedes hacerlo así:
+echo "Este proyecto es un ejemplo para aprender Git." >> README.md
+Aquí el >> agrega al final en lugar de sobrescribir.
+Paso 2: Ver estado
+git status
+Paso 3: Añadir archivo al staging area
+git add README.md
+Paso 4: Hacer un commit
+git commit -m "Primer commit"
+
+
+Paso 5: Enviar a GitHub
+git push -u origin main
+
+$ git push -u origin main
+To https://github.com/rubijai/mi-proyecto.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/rubijai/mi-proyecto.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+
+¿Qué está pasando?
+Tu repositorio local está tratando de subir (push) su versión de la rama main, pero el repositorio remoto ya tiene commits que tú no tienes, así que Git se niega para evitar que sobrescribas algo sin darte cuenta.
+Tienes dos opciones, según el caso:
+Opción 1: Traer los cambios remotos primero (recomendado)
+Haz esto si quieres unir lo que hay en el repositorio remoto con tu trabajo local:
+git pull origin main --rebase
+Luego vuelve a hacer el push:
+git push -u origin main
+Esto traerá los cambios remotos y los aplicará antes de empujar los tuyos, evitando conflictos.
+Opción 2: Forzar el push (⚠️ sobrescribe el remoto)
+Solo haz esto si estás completamente seguro de que deseas reemplazar lo que hay en GitHub con lo que tú tienes localmente:
+git push -u origin main --force
+Advertencia: Esto elimina el historial remoto y lo reemplaza por el tuyo.
+________________________________________
+Consejo
+Antes de forzar un push, puedes verificar qué hay en el remoto:
+git fetch origin
+git log origin/main
+
+
+Administrator@win7U MINGW64 ~/desktop/python/mi-proyecto (main)
+
+$ git push -u origin main --force
+Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 272 bytes | 90.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+To https://github.com/rubijai/mi-proyecto.git
+ + 1ff3601...131ee56 main -> main (forced update)
+branch 'main' set up to track 'origin/main'.
+
+Si tu rama principal se llama master, cambia main por master.
+Git solía usar master como nombre por defecto para la rama principal, pero ahora muchos servicios, incluido GitHub, usan main. Si tu repositorio todavía usa master y quieres cambiarlo por main, puedes hacerlo fácilmente.
+¿Qué necesitas?
+•	Tener Git instalado ✅
+•	Tener acceso al repositorio (local y remoto) ✅
+•	Haber hecho commit de tus cambios antes de proceder ✅
+________________________________________
+PASOS PARA CAMBIAR master A main
+a. Renombrar la rama local
+Primero, asegúrate de estar en la rama master:
+git checkout master
+Luego renómbrala a   main:
+git branch -m main
+________________________________________
+b. Actualizar el repositorio remoto
+Ahora sube la nueva rama main y establece el seguimiento:
+git push -u origin main
+________________________________________
+c. Eliminar master del repositorio remoto (opcional pero recomendado)
+Solo haz esto si ya no la necesitas, o si eres el administrador del proyecto:
+git push origin --delete master
+________________________________________
+d. Cambiar la rama por defecto en GitHub
+Ve a https://github.com/rubijai/mi_proyecto y haz lo siguiente:
+1.	Haz clic en Settings (Configuración).
+2.	En el menú lateral izquierdo, ve a Branches.
+3.	Cambia la default branch a main.
+4.	Luego puedes eliminar master desde la pestaña Branches, si lo deseas.
+________________________________________
+e. Verifica
+git branch -a
+Deberías ver algo como:
+* main
+  remotes/origin/main
+________________________________________
+🧼 Limpieza final (solo si hiciste clone de otro repo)
+Si alguien más clona tu repo en el futuro, ya obtendrá main como rama principal.
+
+6. Clonar un repositorio existente
+git clone https://github.com/usuario/repositorio.git
+________________________________________
+🌿 7. Trabajar con ramas
+Crear nueva rama
+git checkout -b nueva-funcionalidad
+Cambiar de rama
+git checkout main
+Fusionar una rama
+git merge nueva-funcionalidad
+________________________________________
+🤝 8. Colaborar con otros
+Descargar cambios del repositorio remoto
+git pull
+Fork y Pull Request (desde GitHub):
+1.	Haz un fork de un repo.
+2.	Clona el fork localmente.
+3.	Crea una rama y haz tus cambios.
+4.	Sube tus cambios con git push origin rama.
+5.	En GitHub, haz un Pull Request.
+________________________________________
+🚫 9. Ignorar archivos con .gitignore
+Crea un archivo .gitignore y escribe las rutas/archivos que no deseas subir.
+Ejemplo:
+*.log
+.env
+__pycache__/
+________________________________________
+🕓 10. Ver historial y diferencias
+git log               # Ver historial de commits
+git log --oneline     # En una sola línea
+git diff              # Ver cambios no confirmados
+________________________________________
+⚔️ 11. Resolver conflictos
+Si dos personas modifican lo mismo, Git genera un conflicto.
+Pasos típicos:
+1.	Aparece el conflicto en git status.
+2.	Edita los archivos con conflicto.
+3.	Después de resolverlos:
+git add archivo
+git commit
+________________________________________
+📚 CONSEJOS ADICIONALES
+•	Usa GitHub Desktop si prefieres una interfaz gráfica.
+•	Puedes trabajar con Git en PyCharm, VS Code u otros editores modernos que lo integran.
+________________________________________
+🎓 PRÁCTICA SUGERIDA
+Haz esto como ejercicio:
+1.	Crea un repositorio en GitHub.
+2.	Clónalo.
+3.	Crea un archivo notas.txt.
+4.	Añade contenido y haz commit.
+5.	Crea una rama y añade otro archivo.
+6.	Fusiónala a main.
+7.	Revisa el historial.
+________________________________________
+¿Quieres que te guíe paso a paso con un proyecto real
+ desde cero en Git y GitHub, incluyendo cómo usarlo desde PyCharm o VS Code?
+
+Administrator@win7U MINGW64 ~ (main)
+$ cd desktop/python
+
+Administrator@win7U MINGW64 ~/desktop/python (main)
+$ mkdir mi-proyecto
+
+Administrator@win7U MINGW64 ~/desktop/python (main)
+$ cd mi-proyecto
+
+Administrator@win7U MINGW64 ~/desktop/python/mi-proyecto (main)
+$ git config --list --show-origin
+file:C:/Program Files/Git/etc/gitconfig diff.astextplain.textconv=astextplain
+file:C:/Program Files/Git/etc/gitconfig filter.lfs.clean=git-lfs clean -- %f
+file:C:/Program Files/Git/etc/gitconfig filter.lfs.smudge=git-lfs smudge -- %f
+file:C:/Program Files/Git/etc/gitconfig filter.lfs.process=git-lfs filter-proces
+s
+file:C:/Program Files/Git/etc/gitconfig filter.lfs.required=true
+file:C:/Program Files/Git/etc/gitconfig http.sslbackend=openssl
+file:C:/Program Files/Git/etc/gitconfig http.sslcainfo=C:/Program Files/Git/ming
+w64/etc/ssl/certs/ca-bundle.crt
+file:C:/Program Files/Git/etc/gitconfig core.autocrlf=true
+file:C:/Program Files/Git/etc/gitconfig core.fscache=true
+file:C:/Program Files/Git/etc/gitconfig core.symlinks=false
+file:C:/Program Files/Git/etc/gitconfig pull.rebase=false
+file:C:/Program Files/Git/etc/gitconfig credential.helper=manager
+file:C:/Program Files/Git/etc/gitconfig credential.https://dev.azure.com.usehttp
+path=true
+file:C:/Program Files/Git/etc/gitconfig init.defaultbranch=master
+file:C:/Users/Administrator/.gitconfig  filter.lfs.clean=git-lfs clean -- %f
+file:C:/Users/Administrator/.gitconfig  filter.lfs.smudge=git-lfs smudge -- %f
+file:C:/Users/Administrator/.gitconfig  filter.lfs.process=git-lfs filter-proces
+s
+file:C:/Users/Administrator/.gitconfig  filter.lfs.required=true
+file:C:/Users/Administrator/.gitconfig  user.name=rubijai
+
+Administrator@win7U MINGW64 ~/desktop/python/mi-proyecto (main)
+$ config --global core.editor
+bash: config: command not found
+
+Administrator@win7U MINGW64 ~/desktop/python/mi-proyecto (main)
+$ git config --global core.editor
+vim
+
+Administrator@win7U MINGW64 ~/desktop/python/mi-proyecto (main)
+$ git config --list
+diff.astextplain.textconv=astextplain
+filter.lfs.clean=git-lfs clean -- %f
+filter.lfs.smudge=git-lfs smudge -- %f
+filter.lfs.process=git-lfs filter-process
+filter.lfs.required=true
+http.sslbackend=openssl
+http.sslcainfo=C:/Program Files/Git/mingw64/etc/ssl/certs/ca-bundle.crt
+core.autocrlf=true
+core.fscache=true
+core.symlinks=false
+pull.rebase=false
+credential.helper=manager
+credential.https://dev.azure.com.usehttppath=true
+init.defaultbranch=master
+filter.lfs.clean=git-lfs clean -- %f
+filter.lfs.smudge=git-lfs smudge -- %f
+filter.lfs.process=git-lfs filter-process
+filter.lfs.required=true
+user.name=rubijai
+user.email=rubielaaguirreder@gmail.com
+core.editor=vim
+init.defaultbranch=main
+core.repositoryformatversion=0
+
+Administrator@win7U MINGW64 ~/desktop/python/mi-proyecto (main)
+$ git init
+Initialized empty Git repository in C:/Users/Administrator/Desktop/Python/mi-pro
+yecto/.git/
+
+Administrator@win7U MINGW64 ~/desktop/python/mi-proyecto (main)
+$ ls -a
+./  ../  .git/
+
+Administrator@win7U MINGW64 ~/desktop/python/mi-proyecto (main)
+$ git remote add origin https://github.com/rubijai/mi-proyecto.git
+
+Administrator@win7U MINGW64 ~/desktop/python/mi-proyecto (main)
+$ git remote -v
+origin  https://github.com/rubijai/mi-proyecto.git (fetch)
+origin  https://github.com/rubijai/mi-proyecto.git (push)
+
+Administrator@win7U MINGW64 ~/desktop/python/mi-proyecto (main)
+$ echo "# Mi primer proyecto" > README.md
+
+Administrator@win7U MINGW64 ~/desktop/python/mi-proyecto (main)
+$ echo "Este proyecto es un ejemplo para aprender Git." >> README.md
+
+Administrator@win7U MINGW64 ~/desktop/python/mi-proyecto (main)
+$ git status
+On branch main
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        .idea/
+        README.md
+
+nothing added to commit but untracked files present (use "git add" to track)
+
+Administrator@win7U MINGW64 ~/desktop/python/mi-proyecto (main)
+$ git add README.md
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the nex
+t time Git touches it
+
+Administrator@win7U MINGW64 ~/desktop/python/mi-proyecto (main)
+$ git commit -m "Primer commit"
+[main (root-commit) 131ee56] Primer commit
+ 1 file changed, 2 insertions(+)
+ create mode 100644 README.md
+
+Administrator@win7U MINGW64 ~/desktop/python/mi-proyecto (main)
+$ git push -u origin main
+To https://github.com/rubijai/mi-proyecto.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/rubijai/mi-proyecto.git'
+hint: Updates were rejected because the remote contains work that you do not
+hint: have locally. This is usually caused by another repository pushing to
+hint: the same ref. If you want to integrate the remote changes, use
+hint: 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+Administrator@win7U MINGW64 ~/desktop/python/mi-proyecto (main)
+$ git push -u origin main --force
+Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 272 bytes | 90.00 KiB/s, done.
+Total 3 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+To https://github.com/rubijai/mi-proyecto.git
+ + 1ff3601...131ee56 main -> main (forced update)
+branch 'main' set up to track 'origin/main'.
+
+Administrator@win7U MINGW64 ~/desktop/python/mi-proyecto (main)
+$ git clone https://github.com/rubijai/mi-proyecto.git
+Cloning into 'mi-proyecto'...
+remote: Enumerating objects: 3, done.
+remote: Counting objects: 100% (3/3), done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 3 (delta 0), reused 3 (delta 0), pack-reused 0 (from 0)
+Receiving objects: 100% (3/3), done.
+
+Administrator@win7U MINGW64 ~/desktop/python/mi-proyecto (main)
+$
+
+
+Aquí tienes un paso a paso con ejemplos para practicar Git y GitHub usando PyCharm, desde crear un proyecto local hasta subirlo a GitHub y gestionar cambios:
+
+---
+
+## Paso a paso para usar Git y GitHub en PyCharm
+
+### 1. **Configurar Git en PyCharm**
+
+- Asegúrate de tener Git instalado en tu computadora.
+- En PyCharm, ve a **File > Settings > Version Control > Git** (o `Ctrl+Alt+S`).
+- En "Path to Git executable", verifica que esté la ruta correcta a Git (por ejemplo, `C:\Program Files\Git\bin\git.exe` en Windows).
+- Haz clic en **Test** para confirmar que PyCharm reconoce Git.
+
+---
+
+### 2. **Crear un nuevo proyecto o abrir uno existente**
+
+- Abre PyCharm y crea un nuevo proyecto o abre uno existente que quieras versionar con Git.
+
+---
+
+### 3. **Inicializar Git en el proyecto**
+
+- Ve a **VCS > Enable Version Control Integration**.
+- Selecciona **Git** y haz clic en **OK**.
+- Esto creará un repositorio Git local en la carpeta de tu proyecto.
+
+---
+
+### 4. **Agregar archivos al control de versiones**
+
+- En la ventana del proyecto, crea o modifica archivos
+  (por ejemplo, `README.md`).
+- PyCharm detectará los archivos nuevos o modificados y
+  los marcará en rojo (no versionados).
+- Para añadirlos, selecciona los archivos, haz clic derecho
+  y elige **Git > Add**, o usa el atajo `Ctrl+Alt+A`.
+
+---
+
+### 5. **Hacer un commit**
+
+- Ve a **Git > Commit...** o presiona `Ctrl+K`.
+- En la ventana de commit, escribe un mensaje descriptivo, por ejemplo:
+  ```
+  Primer commit: agregando README.md
+  ```
+- Revisa los archivos que serán incluidos y haz clic en **Commit**
+  o **Commit and Push** si quieres subirlos directamente.
+
+---
+
+### 6. **Conectar el proyecto a un repositorio remoto en GitHub**
+
+- Crea un repositorio vacío en GitHub
+  (sin README ni .gitignore para evitar conflictos).
+- En PyCharm, ve a **Git > Remotes...**.
+- Haz clic en el ícono **+** para agregar un nuevo remoto.
+- En "Name" pon `origin` y en "URL" pega la URL HTTPS o
+  SSH de tu repositorio GitHub.
+- Haz clic en **OK**.
+
+---
+
+### 7. **Subir (push) los cambios al repositorio remoto**
+
+- Ve a **Git > Push...** o presiona `Ctrl+Shift+K`.
+- Confirma que la rama y el remoto sean correctos (`main` y `origin`).
+- Haz clic en **Push** para subir tus commits a GitHub.
+
+---
+
+### 8. **Clonar un repositorio desde GitHub (opcional)**
+
+- En la pantalla de bienvenida de PyCharm, selecciona **Get from
+  Version Control**.
+- Pega la URL del repositorio GitHub que quieres clonar.
+- Selecciona la carpeta donde quieres guardar el proyecto y haz
+  clic en **Clone**.
+- PyCharm abrirá el proyecto clonado listo para trabajar.
+
+---
+
+### 9. **Actualizar y sincronizar cambios**
+
+- Para traer cambios nuevos del repositorio remoto,
+  usa **Git > Pull...** (`Ctrl+T`).
+- Para subir tus cambios, usa **Git > Push...** (`Ctrl+Shift+K`).
+- Para ver el historial de commits, usa **Git > Show History**.
+
+---
+
+### 10. **Crear y cambiar entre ramas**
+
+- Ve a la esquina inferior derecha, haz clic en el nombre
+  de la rama actual (por ejemplo, `main`).
+- Selecciona **New Branch** para crear una nueva rama,
+  por ejemplo `feature`.
+- Cambia entre ramas usando el mismo menú.
+
+---
+
+## Recursos para profundizar
+
+- Video tutorial básico: [Uso básico de Git en
+  PyCharm](https://www.youtube.com/watch?v=OsLMBmbTbxc)[1]
+- Documentación oficial de JetBrains para Git en PyCharm:
+  [Set up a Git repository]
+  (https://www.jetbrains.com/help/pycharm/set-up-a-git-repository.html)[5]
+
+---
+
+Con estos pasos podrás practicar Git y GitHub
+directamente desde PyCharm, integrando control
+de versiones y gestión remota sin salir del entorno de desarrollo.
+
+[1] https://www.youtube.com/watch?v=OsLMBmbTbxc
+[2] https://www.youtube.com/watch?v=7VxGL0UJtCA
+[3] https://www.youtube.com/watch?v=3GymExBkKjE
+[4] https://www.youtube.com/watch?v=HNni9ehnSvA
+[5] https://www.jetbrains.com/help/pycharm/set-up-a-git-repository.html
+[6] https://docs.github.com/es/enterprise-cloud@latest/codespaces/setting-up-your-project-for-codespaces/adding-a-dev-container-configuration/setting-up-your-python-project-for-codespaces
+[7] https://www.reddit.com/r/pycharm/comments/saznaa/need_help_pulling_a_project_from_github_to_pycharm/?tl=es-es
+[8] https://www.youtube.com/watch?v=QIrNG0aWXHI
+
+Aquí tienes un paso a paso práctico y detallado para usar **Git** y **GitHub** con **PyCharm** en un proyecto Python, con ejemplos y recomendaciones basados en los recursos más útiles en español[1][2][3]:
+
+## 1. Crear o abrir tu proyecto Python en PyCharm
+
+- Abre PyCharm y crea un nuevo proyecto Python, o abre uno existente.
+- Si es un proyecto nuevo, puedes hacer un simple `main.py` con el clásico:
+  ```python
+  print("Hola, mundo")
+  ```
+
+## 2. Habilitar Git en tu proyecto
+
+- Ve al menú superior y selecciona:
+  **VCS > Enable Version Control Integration…**
+- Elige **Git** y haz clic en **OK**[2].
+- Ahora tu proyecto está bajo control de versiones local.
+
+## 3. Crear un archivo `.gitignore`
+
+- Haz clic derecho en la raíz del proyecto > **New > File** y nómbralo `.gitignore`.
+- Añade líneas para ignorar archivos/carpetas innecesarios. Ejemplo para Python y PyCharm:
+  ```
+  __pycache__/
+  *.pyc
+  .idea/
+  venv/
+  ```
+- Esto evitará subir archivos de configuración o temporales[1][2].
+
+## 4. Realizar el primer commit
+
+- Haz clic derecho en la carpeta raíz > **Git > Add** para añadir todos los archivos al seguimiento.
+- Luego, ve a **Git > Commit** (o usa el botón azul en la parte superior).
+- Escribe un mensaje claro, por ejemplo:
+  `Primer commit: proyecto base con main.py`
+- Haz clic en **Commit** para guardar los cambios localmente[2].
+
+## 5. Crear un repositorio en GitHub
+
+- Ve a [GitHub](https://github.com/) y crea un nuevo repositorio vacío.
+- No inicialices con README ni .gitignore (ya tienes estos archivos en tu proyecto local).
+
+## 6. Conectar tu proyecto local con GitHub
+
+- En PyCharm, abre la terminal (abajo) o usa el menú **VCS > Git > Remotes**.
+- Agrega el repositorio remoto con:
+  ```
+  git remote add origin https://github.com/tu_usuario/tu_repositorio.git
+  ```
+- Ahora tu proyecto local está vinculado a GitHub.
+
+## 7. Subir tus cambios a GitHub (push)
+
+- Ve a **Git > Push** o usa la terminal:
+  ```
+  git push -u origin master
+  ```
+- Ingresa tus credenciales de GitHub si es la primera vez.
+- Ahora tu código está en la nube y puedes verlo en GitHub[1][2][4].
+
+## 8. Hacer cambios y sincronizarlos
+
+- Modifica tu código, por ejemplo, en `main.py`:
+  ```python
+  print("Hola, mundo desde GitHub y PyCharm")
+  ```
+- Haz **Git > Add**, luego **Git > Commit** con un mensaje, y finalmente **Git > Push** para subir los cambios.
+
+## 9. Trabajar con ramas (opcional)
+
+- Ve a **Git > Branches > New Branch** para crear una rama nueva, por ejemplo, `develop`[5].
+- Cambia entre ramas desde el mismo menú para trabajar en nuevas funcionalidades sin afectar la principal.
+
+## Ejemplo de flujo de trabajo típico
+
+1. Clonas o creas un proyecto en PyCharm.
+2. Habilitas Git y creas `.gitignore`.
+3. Haces commits locales de tus avances.
+4. Conectas con un repositorio remoto en GitHub.
+5. Subes (push) tus cambios.
+6. Repites el ciclo de editar, commit y push para mantener tu código seguro y actualizado.
+
+### Recursos útiles
+
+- [Video: Uso básico de Git en PyCharm #10 Curso de Python](https://www.youtube.com/watch?v=OsLMBmbTbxc)[1]
+- [Ejemplo de proyecto Python + PyCharm + GitHub](https://github.com/ElWillieES/python-hello-world)[6]
+- [Tutorial: 10 Curso de PyCharm - git](https://www.youtube.com/watch?v=7VxGL0UJtCA)[3]
+
+¿Quieres que te explique cómo clonar un repositorio existente desde GitHub en PyCharm, o cómo resolver conflictos?
+
+[1] https://www.youtube.com/watch?v=OsLMBmbTbxc
+[2] https://elwillie.es/2022/11/09/hello-world-con-python-y-pycharm/
+[3] https://www.youtube.com/watch?v=7VxGL0UJtCA
+[4] https://www.youtube.com/watch?v=8hy3GqSIKio
+[5] https://codegym.cc/es/quests/lectures/es.codegym.python.core.lecture.level07.lecture10
+[6] https://github.com/ElWillieES/python-hello-world
+[7] https://www.youtube.com/watch?v=QIrNG0aWXHI
+[8] https://www.reddit.com/r/pycharm/comments/mqh8hw/how_to_link_pycharm_to_my_github_account/
+[9] https://www.reddit.com/r/learnpython/comments/ae0fxy/pycharm_and_git_with_virtual_environment_guide_or/?tl=es-es
+[10] https://gist.github.com/cgonzalezdai/cc33db72a6fe5178637aabb562eae35c
+[11] https://www.datacamp.com/es/tutorial/github-and-git-tutorial-for-beginners
+[12] https://ucodemy.github.io/pybioq/3_Pycharm/
+[13] https://j2logo.com/python/tutorial-de-pycharm-en-espanol/
+[14] https://www.youtube.com/watch?v=HNni9ehnSvA
+[15] https://gist.github.com/HiroNakamura/4650385
